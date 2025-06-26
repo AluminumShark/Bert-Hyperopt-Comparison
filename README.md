@@ -229,8 +229,8 @@ If you use this code in your research, please cite:
 ```bibtex
 @misc{bert-hyperopt-comparison,
   title={BERT Hyperparameter Optimization Comparison},
-  author={Your Name},
-  year={2024},
+  author={Levi},
+  year={2025},
   url={https://github.com/your-username/Bert-Hyperopt-Comparison}
 }
 ```
