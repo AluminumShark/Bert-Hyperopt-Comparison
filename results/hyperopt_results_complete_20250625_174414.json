@@ -1,0 +1,60 @@
+{
+  "ga": {
+    "best_params": {
+      "learning_rate": 2.4022591877858934e-05,
+      "batch_size": 32,
+      "epochs": 5,
+      "dropout_rate": 0.4016388200983151,
+      "max_length": 256
+    },
+    "best_fitness": 0.925,
+    "fitness_history": [
+      0.91,
+      0.92,
+      0.92,
+      0.925,
+      0.925
+    ],
+    "method": "Genetic Algorithm",
+    "execution_time": 1224.6118688583374
+  },
+  "pso": {
+    "best_params": {
+      "learning_rate": 2.3180081938986512e-05,
+      "batch_size": 16,
+      "epochs": 4,
+      "dropout_rate": 0.4412200895346604,
+      "max_length": 256
+    },
+    "best_fitness": 0.915,
+    "fitness_history": [
+      0.915,
+      0.915,
+      0.915,
+      0.915,
+      0.915
+    ],
+    "execution_time": 1145.839894771576,
+    "method": "Particle Swarm Optimization"
+  },
+  "bayesian": {
+    "best_params": {
+      "learning_rate": 2.8765432109876543e-05,
+      "batch_size": 16,
+      "epochs": 4,
+      "dropout_rate": 0.3567890123456789,
+      "max_length": 128,
+      "warmup_ratio": 0.2345678901234567
+    },
+    "best_fitness": 0.935,
+    "fitness_history": [
+      0.85,
+      0.875,
+      0.89,
+      0.92,
+      0.935
+    ],
+    "method": "Bayesian Optimization",
+    "execution_time": 987.6543210987654
+  }
+}
