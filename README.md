@@ -1,100 +1,33 @@
 # BERT Hyperparameter Optimization Comparison
 
-A comprehensive comparison of different hyperparameter optimization methods for BERT fine-tuning on sentiment analysis tasks. This project implements and compares three popular optimization algorithms: Genetic Algorithm (GA), Particle Swarm Optimization (PSO), and Bayesian Optimization.
+A comprehensive comparison of hyperparameter optimization methods (Genetic Algorithm, Particle Swarm Optimization, and Bayesian Optimization) for BERT fine-tuning on sentiment analysis tasks.
 
-## What This Project Does
+## Features
 
-This project helps you find the best hyperparameters for training BERT models by comparing three different optimization approaches. Instead of manually trying different combinations (which could take forever), these algorithms intelligently search through the hyperparameter space to find configurations that give you the best performance.
-
-**Why This Matters:** Finding good hyperparameters can be the difference between a model that barely works and one that achieves state-of-the-art results. But with so many possible combinations, you need smart search strategies.
-
-## Key Features
-
-- **Three Optimization Methods**: Compare genetic algorithms, particle swarm optimization, and Bayesian optimization side-by-side
-- **Real Dataset**: Uses the IMDB movie review dataset for sentiment analysis (with fallback to synthetic data)
-- **Comprehensive Analysis**: Detailed visualizations showing convergence, parameter distributions, and performance comparisons
-- **Easy to Use**: Run complete experiments with just a few lines of code
-- **Extensible Design**: Easy to add new optimization methods or adapt to different tasks
+- **Three Optimization Methods**: Compare GA, PSO, and Bayesian optimization side-by-side
+- **Real Dataset**: Uses IMDB movie review dataset (with synthetic data fallback)
+- **Comprehensive Analysis**: Detailed visualizations for convergence, parameters, and performance
+- **Modern Tooling**: Uses `uv` for dependency management and `ruff` for linting
 
 ## Project Structure
 
 ```
 Bert-Hyperopt-Comparison/
 ├── src/
+│   ├── __init__.py                  # Package initialization
 │   ├── bert_classifier.py           # BERT model and training pipeline
 │   ├── experiment.py                # Main experiment runner
-│   ├── visualize.py                 # Results visualization tools
+│   ├── visualize.py                 # Visualization tools
 │   └── optimizers/
-│       ├── bayesian_optimizer.py    # Bayesian optimization implementation
-│       ├── ga_optimizer.py          # Genetic algorithm implementation
+│       ├── __init__.py              # Optimizers package
+│       ├── bayesian_optimizer.py    # Bayesian optimization
+│       ├── ga_optimizer.py          # Genetic algorithm
 │       └── pso_optimizer.py         # Particle swarm optimization
-├── results/                         # Experiment results (JSON files)
-├── visualizations/                  # Generated charts and analysis
-├── requirements.txt                 # Python dependencies
-└── README.md                        # This file
+├── results/                         # Experiment results (JSON)
+├── visualizations/                  # Generated charts
+├── pyproject.toml                   # Project configuration
+└── README.md
 ```
-
-## How It Works
-
-### The BERT Classifier (`src/bert_classifier.py`)
-- **Custom Dataset Handler**: Safely loads and validates text data
-- **BERT Model**: Uses pre-trained BERT with a classification head
-- **Training Pipeline**: Complete training and evaluation with proper error handling
-
-### The Optimization Algorithms
-
-#### Genetic Algorithm (`src/optimizers/ga_optimizer.py`)
-Think of this like evolution in action. We start with a population of random hyperparameter combinations, then repeatedly:
-- Select the best performers as "parents"
-- Create new combinations by mixing parent parameters (crossover)
-- Randomly mutate some parameters to explore new possibilities
-- Keep the best performers for the next generation
-
-**Best for**: Exploring diverse parameter combinations when you don't have strong prior beliefs about what works.
-
-#### Particle Swarm Optimization (`src/optimizers/pso_optimizer.py`)
-Imagine a swarm of particles flying through the hyperparameter space, where each particle represents a different configuration. Particles:
-- Remember their own best position
-- Are attracted to the swarm's overall best position  
-- Have momentum that helps them explore new areas
-
-**Best for**: Balanced exploration and exploitation with good convergence properties.
-
-#### Bayesian Optimization (`src/optimizers/bayesian_optimizer.py`)
-This is the "smart" approach that builds a probabilistic model of how hyperparameters affect performance:
-- Uses past results to predict which new combinations are most promising
-- Balances trying promising areas vs exploring unknown regions
-- Gets smarter with each evaluation
-
-**Best for**: When evaluations are expensive and you want to make every trial count.
-
-### Experiment Framework (`src/experiment.py`)
-
-The main `HyperparameterOptimizationExperiment` class handles everything:
-- Loads and preprocesses the IMDB dataset (or creates synthetic data)
-- Runs all three optimization methods
-- Collects timing and performance metrics
-- Generates comparison reports
-- Saves results for later analysis
-
-### Visualization Suite (`src/visualize.py`)
-
-Creates publication-ready charts including:
-- **Convergence plots**: See how each method improves over time
-- **Parameter analysis**: Understand which hyperparameters matter most
-- **Performance comparison**: Compare accuracy, speed, and efficiency
-- **Summary reports**: Executive-level overview of results
-
-## What Hyperparameters Are Optimized
-
-| Parameter | Type | Range | Why It Matters |
-|-----------|------|-------|----------------|
-| `learning_rate` | Continuous | 1e-5 to 5e-5 | Controls how fast the model learns (too high = unstable, too low = slow) |
-| `batch_size` | Discrete | [8, 16, 32] | Affects training stability and GPU memory usage |
-| `epochs` | Discrete | [2, 3, 4, 5] | How many times to go through the training data |
-| `dropout_rate` | Continuous | 0.1 to 0.5 | Prevents overfitting by randomly ignoring some neurons |
-| `max_length` | Discrete | [64, 128, 256] | Maximum text length to process (longer = more context but slower) |
-| `warmup_ratio` | Continuous | 0.1 to 0.5 | Gradually increases learning rate at the start (Bayesian only) |
 
 ## Quick Start
 
@@ -102,129 +35,95 @@ Creates publication-ready charts including:
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/your-username/Bert-Hyperopt-Comparison.git
 cd Bert-Hyperopt-Comparison
 
-# Install dependencies
-pip install -r requirements.txt
+# Install with uv (recommended)
+uv sync
+
+# Or install with pip
+pip install -e .
 ```
 
-### Running the Complete Experiment
+### Run Experiment
 
 ```python
 from src.experiment import HyperparameterOptimizationExperiment
 
-# Run a quick comparison with a small dataset
+# Run with small dataset (1000 samples)
 experiment = HyperparameterOptimizationExperiment(data_size='small')
 experiment.run_all_experiments()
-
-# Results are automatically saved and visualizations are generated
 ```
 
-### Running Individual Optimizers
-
-```python
-from src.bert_classifier import BertTrainer
-from src.optimizers.ga_optimizer import GAHyperparameterOptimizer
-
-# Set up your data and trainer
-trainer = BertTrainer()
-train_texts = ["This movie is great!", "This movie is terrible.", ...]
-train_labels = [1, 0, ...]  # 1 = positive, 0 = negative
-val_texts = ["Amazing film!", "Boring movie.", ...]
-val_labels = [1, 0, ...]
-
-# Run genetic algorithm optimization
-ga_optimizer = GAHyperparameterOptimizer(
-    trainer=trainer,
-    train_data=(train_texts, train_labels),
-    val_data=(val_texts, val_labels),
-    population_size=10,
-    generations=5
-)
-
-results = ga_optimizer.optimize()
-print(f"Best accuracy: {results['best_fitness']:.4f}")
-print(f"Best parameters: {results['best_params']}")
-```
-
-### Generating Visualizations
+### Generate Visualizations
 
 ```python
 from src.visualize import ExperimentVisualizer
 
-# Create visualizations from saved results
 visualizer = ExperimentVisualizer()
 visualizer.create_all_visualizations()
-
-# Individual plots
-visualizer.plot_convergence_comparison(save_path='convergence.png')
-visualizer.create_performance_radar_chart(save_path='radar.png')
 ```
 
-## Understanding the Results
+### Command Line
 
-### What to Look For
+```bash
+# Run experiment
+uv run python -m src.experiment
 
-1. **Convergence Speed**: Which method finds good solutions fastest?
-2. **Final Performance**: Which method achieves the highest accuracy?
-3. **Stability**: Which method gives consistent results across runs?
-4. **Efficiency**: Which method gives the best accuracy per unit of time?
+# Generate visualizations
+uv run python -m src.visualize
+```
 
-### Typical Findings
+## Hyperparameters Optimized
 
-- **Bayesian Optimization**: Often achieves the best final performance with fewer evaluations
-- **Genetic Algorithm**: Good at exploring diverse solutions, sometimes finds unexpected good combinations
-- **Particle Swarm**: Balanced performance with good convergence properties
+| Parameter | Type | Range | Description |
+|-----------|------|-------|-------------|
+| `learning_rate` | Continuous | 1e-5 to 5e-5 | AdamW optimizer learning rate |
+| `batch_size` | Discrete | [8, 16, 32] | Training batch size |
+| `epochs` | Discrete | [2, 3, 4, 5] | Number of training epochs |
+| `dropout_rate` | Continuous | 0.1 to 0.5 | Dropout probability |
+| `max_length` | Discrete | [64, 128, 256] | Maximum sequence length |
+| `warmup_ratio` | Continuous | 0.1 to 0.5 | Learning rate warmup ratio (Bayesian only) |
 
-### Tips for Real-World Use
+## Optimization Methods
 
-- Start with Bayesian optimization if you have limited time/compute budget
-- Use genetic algorithms if you want to explore many diverse solutions
-- Try particle swarm optimization as a middle ground
-- Always run multiple independent trials to check consistency
+### Genetic Algorithm (GA)
+Evolves a population of hyperparameter sets using selection, crossover, and mutation operators.
 
-## Customization
+### Particle Swarm Optimization (PSO)
+Particles explore the search space while sharing information about good solutions found.
 
-### Adding New Optimization Methods
+### Bayesian Optimization
+Uses Gaussian processes to model the objective function and intelligently select promising hyperparameters.
 
-1. Create a new optimizer class in `src/optimizers/`
-2. Implement the same interface as existing optimizers
-3. Add it to the experiment configuration in `src/experiment.py`
+## Development
 
-### Using Different Datasets
+```bash
+# Install dev dependencies
+uv sync --dev
 
-1. Modify the `load_data()` method in `HyperparameterOptimizationExperiment`
-2. Ensure your data has the same format (texts and binary labels)
-3. Adjust the synthetic data generation if needed
+# Run linting
+uv run ruff check src
 
-### Changing Hyperparameter Ranges
+# Format code
+uv run ruff format src
 
-1. Update the parameter spaces in each optimizer class
-2. Make sure the ranges make sense for your specific use case
-3. Consider the computational cost of your parameter choices
+# Run tests
+uv run pytest
+```
 
 ## Requirements
 
-- Python 3.7+
-- PyTorch 1.9.0+
-- Transformers library (for BERT)
-- scikit-optimize (for Bayesian optimization)
-- DEAP (for genetic algorithms)
-- PySwarms (for particle swarm optimization)
-- Various other dependencies (see requirements.txt)
+- Python 3.9+
+- PyTorch 2.0+
+- Transformers 4.30+
+- CUDA (optional, for GPU acceleration)
 
-## Contributing
+## License
 
-Feel free to:
-- Add new optimization algorithms
-- Improve the visualization tools
-- Add support for different datasets or tasks
-- Fix bugs or improve documentation
+MIT License - see [LICENSE](LICENSE) for details.
 
 ## Citation
-
-If you use this code in your research, please cite:
 
 ```bibtex
 @misc{bert-hyperopt-comparison,
@@ -235,6 +134,140 @@ If you use this code in your research, please cite:
 }
 ```
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+# BERT 超參數優化比較
+
+針對 BERT 情感分析任務微調的超參數優化方法（遺傳演算法、粒子群優化、貝葉斯優化）綜合比較工具。
+
+## 功能特色
+
+- **三種優化方法**：並排比較 GA、PSO 和貝葉斯優化
+- **真實資料集**：使用 IMDB 電影評論資料集（含合成資料備援）
+- **完整分析**：收斂曲線、參數分佈和效能比較的詳細視覺化
+- **現代工具鏈**：使用 `uv` 管理依賴項，`ruff` 進行程式碼檢查
+
+## 專案結構
+
+```
+Bert-Hyperopt-Comparison/
+├── src/
+│   ├── __init__.py                  # 套件初始化
+│   ├── bert_classifier.py           # BERT 模型與訓練流程
+│   ├── experiment.py                # 實驗執行器
+│   ├── visualize.py                 # 視覺化工具
+│   └── optimizers/
+│       ├── __init__.py              # 優化器套件
+│       ├── bayesian_optimizer.py    # 貝葉斯優化
+│       ├── ga_optimizer.py          # 遺傳演算法
+│       └── pso_optimizer.py         # 粒子群優化
+├── results/                         # 實驗結果 (JSON)
+├── visualizations/                  # 生成的圖表
+├── pyproject.toml                   # 專案配置
+└── README.md
+```
+
+## 快速開始
+
+### 安裝
+
+```bash
+# 複製專案
+git clone https://github.com/your-username/Bert-Hyperopt-Comparison.git
+cd Bert-Hyperopt-Comparison
+
+# 使用 uv 安裝（推薦）
+uv sync
+
+# 或使用 pip 安裝
+pip install -e .
+```
+
+### 執行實驗
+
+```python
+from src.experiment import HyperparameterOptimizationExperiment
+
+# 使用小型資料集（1000 筆樣本）執行
+experiment = HyperparameterOptimizationExperiment(data_size='small')
+experiment.run_all_experiments()
+```
+
+### 生成視覺化圖表
+
+```python
+from src.visualize import ExperimentVisualizer
+
+visualizer = ExperimentVisualizer()
+visualizer.create_all_visualizations()
+```
+
+### 命令列執行
+
+```bash
+# 執行實驗
+uv run python -m src.experiment
+
+# 生成視覺化圖表
+uv run python -m src.visualize
+```
+
+## 優化的超參數
+
+| 參數 | 類型 | 範圍 | 說明 |
+|------|------|------|------|
+| `learning_rate` | 連續 | 1e-5 至 5e-5 | AdamW 優化器學習率 |
+| `batch_size` | 離散 | [8, 16, 32] | 訓練批次大小 |
+| `epochs` | 離散 | [2, 3, 4, 5] | 訓練週期數 |
+| `dropout_rate` | 連續 | 0.1 至 0.5 | Dropout 機率 |
+| `max_length` | 離散 | [64, 128, 256] | 最大序列長度 |
+| `warmup_ratio` | 連續 | 0.1 至 0.5 | 學習率預熱比例（僅限貝葉斯） |
+
+## 優化方法
+
+### 遺傳演算法 (GA)
+使用選擇、交叉和突變運算子演化超參數群體。
+
+### 粒子群優化 (PSO)
+粒子在搜尋空間中探索，同時分享已發現的良好解決方案。
+
+### 貝葉斯優化
+使用高斯過程建模目標函數，智慧選擇有潛力的超參數組合。
+
+## 開發
+
+```bash
+# 安裝開發依賴
+uv sync --dev
+
+# 執行程式碼檢查
+uv run ruff check src
+
+# 格式化程式碼
+uv run ruff format src
+
+# 執行測試
+uv run pytest
+```
+
+## 系統需求
+
+- Python 3.9+
+- PyTorch 2.0+
+- Transformers 4.30+
+- CUDA（選用，用於 GPU 加速）
+
+## 授權
+
+MIT 授權 - 詳見 [LICENSE](LICENSE)
+
+## 引用
+
+```bibtex
+@misc{bert-hyperopt-comparison,
+  title={BERT Hyperparameter Optimization Comparison},
+  author={Levi},
+  year={2025},
+  url={https://github.com/your-username/Bert-Hyperopt-Comparison}
+}
+```
